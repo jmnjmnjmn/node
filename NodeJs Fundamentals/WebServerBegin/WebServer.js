@@ -22,8 +22,10 @@ function webserver(req,res){
 
 	fs.access(filepath,fs.F_OK, error =>{
 		if(!error){
+			// Read and Serve the file over response
 			fs.readFile(filepath,(error,content)=>{
 				if(!error){
+					console.log('Serving: ', filepath);
 					//Resolve the content type
 					let contentType = mimes[path.extname(filepath)];//mimes['.css']=='text/css'
 					//Serve the file from the buffer;
@@ -36,6 +38,9 @@ function webserver(req,res){
 				}
 
 			})
+		} else{
+			res.writeHead(404);
+			res.end('Content not found!');
 		}
 	});
 
