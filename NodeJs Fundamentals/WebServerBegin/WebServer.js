@@ -12,40 +12,48 @@ let mimes =  {
 	'.png' : 'image/png'
 
 }
+function fileAccess(filepath){
+	return new Promise((resolve, reject) => {
+		fs.access(filepath,fs.F_OK, error => { 
+			if(!error){
+				resolve(filepath);
+			} else{
+				reject(error);
+			}
+		});
+	});
+}
+
+function fileReader(filepath){
+	return new Promise((resolve, reject) => {
+		fs.readFile(filepath,(error, content) => {
+			if(!error){
+				resolve(content);
+			} else{
+				reject(error);
+			}
+		});
+	});
+}
 
 function webserver(req,res){
 	//if the route requested is '/', then load 'index.htm' or else
 	// load the requested files
 	let baseURI = url.parse(req.url);
 	let filepath = __dirname + (baseURI.pathname === '/'? '/index.htm': baseURI.pathname);
-	// console.log(filepath);
+	let contentType = mimes[path.extname(filepath)];//mimes['.css']=='text/css'
 
-	fs.access(filepath,fs.F_OK, error =>{
-		if(!error){
-			// Read and Serve the file over response
-			fs.readFile(filepath,(error,content)=>{
-				if(!error){
-					console.log('Serving: ', filepath);
-					//Resolve the content type
-					let contentType = mimes[path.extname(filepath)];//mimes['.css']=='text/css'
-					//Serve the file from the buffer;
-					res.writeHead(200,{'Content-type': contentType});
-					res.end(content,'utf-8');
-				}else{
-					//Serve a 500
-					res.writeHead(500);
-					res.end('The server could not read the file');
-				}
-
-			})
-		} else{
+	fileAccess(filepath)
+		.then(fileReader)
+		.then(content =>{
+			res.writeHead(200,{'Content-type': contentType});
+			res.end(content,'utf-8');
+		})
+		.catch(error => {
 			res.writeHead(404);
-			res.end('Content not found!');
-		}
-	});
+			res.end(JSON.stringify(error));
+		});
 
 }
 
-http.createServer(webserver).listen(3000,()=>{
-	console.log('Webserver running on port 3000');
-});
+http.createServer(webserver).listen(3000,()=> console.log('Webserver running on port 3000'));
