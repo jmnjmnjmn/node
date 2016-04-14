@@ -1,10 +1,11 @@
 'use strict';
 const config = require('../config');
+const logger = require('../logger');
 const Mongoose = require('mongoose').connect(config.dbURI);
 
 //Log an error
 Mongoose.connection.on('error', error =>{
-	console.log("MongoDB Error", error);
+	logger.log('error', 'Mongoose connect error: '+ error);
 });
 
 // Create a Schema that defines the user data

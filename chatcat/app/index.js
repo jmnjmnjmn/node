@@ -32,5 +32,6 @@ let ioServer = app => {
 module.exports = {
 	router: require('./routes')(),
 	session: require('./session'),
-	ioServer
+	ioServer,
+	logger: require('./logger')
 }

@@ -1,3 +1,4 @@
 /app/config/development.json
 /node_modules
 ../ChatCAT_Completed/
+*.log
