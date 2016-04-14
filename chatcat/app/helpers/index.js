@@ -49,6 +49,7 @@ let createNewUser = profile => {
 	});
 }
 
+// ES6 promisified version of findById
 let findById = id =>{
 	return new Promise((resolve, reject)=>{
 		db.userModel.findById(id, (error, user) =>{
@@ -61,9 +62,19 @@ let findById = id =>{
 	});
 }
 
+// A middleware
+let isAuthenticated = (req, res, next)=>{
+	if(req.isAuthenticated()){
+		next();
+	}else{
+		res.redirect('/');
+	}
+}
+
 module.exports = {
 	route,
 	findOne,
 	createNewUser,
-	findById
+	findById,
+	isAuthenticated
 }
