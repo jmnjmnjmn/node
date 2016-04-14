@@ -32,7 +32,7 @@ module.exports = (io, app) => {
 	});
 
 	io.of('/chatter').on('connection', socket =>{
-		
+		//Join a chatroom 
 		socket.on('join', data =>{
 			let usersList = h.addUserToRoom(allrooms, data, socket);
 
@@ -41,10 +41,16 @@ module.exports = (io, app) => {
 			socket.emit('updateUsersList', JSON.stringify(usersList.users));
 		});
 
+		//When a socket exits
 		socket.on('disconnect', () => {
-
+			//Find a room , to which the socket is connect to and purge the user
 			let room = h.removeUserFromRoom(allrooms, socket);
 			socket.broadcast.to(room.roomID).emit('updateUsersList', JSON.stringify(room.users));
+		});
+
+		//when a new message arrives
+		socket.on('newMessage', data=>{
+			socket.to(data.roomID).emit('inMessage', JSON.stringify(data));
 		});
 	});
 
