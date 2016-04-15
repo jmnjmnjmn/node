@@ -1,7 +1,0 @@
-{
-	"host":"http://<your-ec2-elasticIP>",
-	// "S3AccessKey":"<your-s3-access-key>",
-	// "S3Secret":"<your-s3-secret>",
-	// "S3Bucket":"photogrid",
-	// "dbURL":"<your-mongolab-dburl>"
-}
