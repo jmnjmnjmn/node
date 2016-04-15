@@ -13,7 +13,6 @@ var singleImage = new mongoose.Schema({
 
 var singleImageModel = mongoose.model('singleImage', singleImage);
 
-
 var router = express.Router();
 
 router.get('/', function(req, res, next){
@@ -81,6 +80,18 @@ router.post('/upload', function(req, res, next){
 				})
 			})
 		})
+})
+
+router.get('/getimages', function(req, res, next){
+	singleImageModel.find({}, null, {sort:{votes:-1}}, function(err, result){
+		res.send(JSON.stringify(result));
+	})
+})
+
+router.get('/voteup/:id', function(req, res, next){
+	singleImageModel.findByIdAndUpdate(req.params.id, {$inc:{votes:1}}, function(err, result){
+		res.send(200, {votes:result.votes});
+	})
 })
 
 app.use('/', router);
