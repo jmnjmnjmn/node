@@ -2,7 +2,8 @@
 const config = require('./config');
 const redis = require('redis').createClient;
 const adapter = require('socket.io-redis');
-//Social Auth
+
+//Social Authentication invoke
 require('./auth')();
 
 //Create an IO Server instance

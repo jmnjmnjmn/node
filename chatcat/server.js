@@ -8,9 +8,13 @@ app.set('port',process.env.PORT || 3000);
 app.use(express.static('public'));
 app.set('view engine','ejs');
 
+//mount session midlleware
 app.use(chatCat.session);
+
+//mount auth midlleware, res.user is available
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.use(require('morgan')('combined',{
 	stream: {
 		write: message => {
@@ -19,6 +23,7 @@ app.use(require('morgan')('combined',{
 	}
 }));
 
+//mount router midlleware
 app.use('/',chatCat.router);
 
 

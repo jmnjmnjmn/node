@@ -41,6 +41,7 @@ module.exports = () => {
 				failureRedirect: '/'
 			}),
 			'/logout': (req, res, next) =>{
+				//by passprt clean out session, remove req.user
 				req.logout();
 				res.redirect('/');
 			}

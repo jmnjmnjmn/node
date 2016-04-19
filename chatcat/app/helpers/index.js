@@ -25,10 +25,11 @@ let route = routes => {
 	_registerRoutes(routes);
 	return router;
 }
+
 //Find a single user based on a key
 let findOne = profileID => {
 	return db.userModel.findOne({
-		'profileID': profileID
+		'profileId': profileID
 	});
 }
 // create a new user and return that instance
