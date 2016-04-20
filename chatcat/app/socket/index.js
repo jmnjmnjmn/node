@@ -3,14 +3,15 @@ const h = require('../helpers');
 module.exports = (io, app) => {
 	let allrooms = app.locals.chatrooms;
 
-
+	//listsen to event called connection, recieve callback of socket
 	io.of('/roomslist').on('connection',socket => {
-		socket.on('getChatrooms', ()=>{
+		
+		//respond to the request of getChatrooms,send back "chatRoomList"
+		socket.on('getChatrooms', ()=>{	
 			socket.emit('chatRoomsList', JSON.stringify(allrooms));
 		});
 
 		socket.on('createNewRoom', newRoomInput =>{
-			// console.log(newRoomInput);
 			//check if a room exists
 			//if not, create one and broadcast
 			if(!h.findRoomByName(allrooms, newRoomInput)){
@@ -20,25 +21,24 @@ module.exports = (io, app) => {
 					users:[]
 				});
 			
-			//Emit an updated list to the creator
+			//Emit an updated list to the creator(only the creator)
 			socket.emit('chatRoomsList', JSON.stringify(allrooms));
+			
 			//Emit an updated list to everyone connect to the rooms page
 			socket.broadcast.emit('chatRoomsList', JSON.stringify(allrooms));
-
-
 			}
 
 		});
 	});
 
 	io.of('/chatter').on('connection', socket =>{
-		//Join a chatroom 
+		
+		////respond to the request of join room,send back "updateUsersList"
 		socket.on('join', data =>{
 			let usersList = h.addUserToRoom(allrooms, data, socket);
-
-			// Update list of active users
-			socket.broadcast.to(data.roomID).emit('updateUsersList', JSON.stringify(usersList.users));
-			socket.emit('updateUsersList', JSON.stringify(usersList.users));
+			// Update list of active users in the room
+			socket.broadcast.to(data.roomID).emit('updateUsersList', JSON.stringify(usersList));
+			socket.emit('updateUsersList', JSON.stringify(usersList));
 		});
 
 		//When a socket exits

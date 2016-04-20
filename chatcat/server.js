@@ -11,10 +11,11 @@ app.set('view engine','ejs');
 //mount session midlleware
 app.use(chatCat.session);
 
-//mount auth midlleware, res.user is available
+//mount auth midlleware, res.user is available after mounted
 app.use(passport.initialize());
 app.use(passport.session());
 
+//mount morgan to log the http request
 app.use(require('morgan')('combined',{
 	stream: {
 		write: message => {
